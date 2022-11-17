@@ -107,7 +107,8 @@ shinyApp(ui, server)
 
 ## -----------------------------------
 
-## Example 2: Let user choose which lines are editable, how many lines to skip, which line shows an error, and use custom actions
+## Example 2: Let user choose which lines are editable, how many lines to skip, which line
+## shows an error, and use custom actions
 library(shiny)
 library(shinycodeviewer)
 
@@ -134,10 +135,12 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   code <- code_viewer_server("code", chunks = init_code, auto_actions = FALSE,
-    editable = reactive(input$editable), skip = reactive(input$skip), error_line = reactive(input$error))
+    editable = reactive(input$editable), skip = reactive(input$skip),
+    error_line = reactive(input$error))
 
   observeEvent(code$insert(), {
-    shinyalert::shinyalert(paste("Insert before chunk", code$insert()), closeOnClickOutside = TRUE)
+    shinyalert::shinyalert(paste("Insert before chunk", code$insert()),
+      closeOnClickOutside = TRUE)
   })
   observeEvent(code$modify(), {
     shinyalert::shinyalert(paste("Modify chunk", code$modify()), closeOnClickOutside = TRUE)
