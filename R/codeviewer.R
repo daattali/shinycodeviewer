@@ -134,10 +134,10 @@ code_viewer_ui <- function(id, height = NULL, width = "100%") {
       stylesheet = "shinycodeviewer.css"
     ),
 
-    shiny::div(
-      style = style,
+    shiny::uiOutput(
+      ns("code_section"),
       class = "shiny-code-viewer",
-      shiny::uiOutput(ns("code_section"))
+      style = style
     )
   )
 }
@@ -174,7 +174,7 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
       skip_r <- make_reactive(skip)
 
       chunks_current <- shiny::reactiveVal(NULL)
-      shiny::observeEvent(chunks_r(), {
+      shiny::observeEvent(chunks_r(), ignoreNULL = FALSE, {
         chunks_current(chunks_r())
       })
 
