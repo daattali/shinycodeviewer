@@ -1,0 +1,26 @@
+Package: shinycodeviewer
+Title: View and Edit Code Chunks with Syntax Highlighting in 'Shiny'
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Dean", "Attali",
+        email = "daattali@gmail.com",
+        role = c("aut", "cre"),
+        comment = c(ORCID="0000-0002-5645-3493")
+    ))
+Description: Display a series of code chunks with syntax highlighting. Each
+    chunk can optionally have Insert/Modify/Delete buttons. One chunk can be
+    shown as an error/bug.
+URL: https://github.com/daattali/shinycodeviewer
+BugReports: https://github.com/daattali/shinycodeviewer/issues
+Depends:
+    R (>= 3.3.0)
+Imports:
+    fontawesome (>= 0.4.0),
+    glue,
+    htmltools,
+    shiny (>= 1.0.4),
+    shinyalert (>= 3.0.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
