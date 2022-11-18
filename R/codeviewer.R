@@ -174,8 +174,13 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
       skip_r <- make_reactive(skip)
 
       chunks_current <- shiny::reactiveVal(NULL)
-      shiny::observeEvent(chunks_r(), ignoreNULL = FALSE, {
-        chunks_current(chunks_r())
+      observe({
+        tryCatch({
+          chunks_current(chunks_r())
+        }, error = function(err) {
+          # If the chunks are the result of a failed shiny req() call, treat it as NULL instead of error
+          chunks_current(NULL)
+        })
       })
 
       skip_num <- shiny::reactive({
