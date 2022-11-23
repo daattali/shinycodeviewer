@@ -8,7 +8,7 @@
   padding: 0.8rem;
 }
 .shiny-code-chunks pre {
-  overflow: visible;
+  white-space: pre-wrap;
   background: inherit;
   border: 0;
   padding: 0;
@@ -19,6 +19,7 @@
   padding: 0.2rem;
   border-radius: 4px;
   transition: background 0.25s;
+  overflow: hidden;
 }
 .shiny-code-chunk:hover {
   background: #eee;
@@ -26,11 +27,13 @@
 .shiny-code-chunk .chunk-btns {
   position: absolute;
   top: 0;
-  right: 0.2rem;
+  right: 0;
   color: #444;
   opacity: 0;
   transition: opacity 0.25s;
   font-size: 1.2em;
+  background: rgba(240, 240, 240, 0.9);
+  border-radius: 4px;
 }
 .shiny-code-chunk:hover .chunk-btns {
   opacity: 1;
