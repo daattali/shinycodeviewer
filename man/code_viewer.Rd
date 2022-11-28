@@ -14,6 +14,7 @@ code_viewer_server(
   editable = NULL,
   error_line = NULL,
   skip = NULL,
+  show_chunk_numbers = FALSE,
   auto_actions = TRUE
 )
 }
@@ -38,6 +39,9 @@ for interaction purposes but still showing them. For example, if there are 10 li
 clicks on insert/modify/delete on the 5th line, then the module will report it as the second line (5 - 3 = 2).
 Similarly, if \code{skip = 3} and \code{error_line = 5}, then it will appear as if the 8th line is the error (because the
 first 3 don't count).}
+
+\item{show_chunk_numbers}{(boolean) If \code{TRUE}, show chunk numbers beside each code chunk (this is equivalent
+to line numbers if each chunk is a single line of code).}
 
 \item{auto_actions}{(boolean) If \code{TRUE}, clicking on an action (insert/modify/delete) will be handled
 automatically by {shinycodeviewer}. If \code{FALSE}, clicking these actions will not trigger

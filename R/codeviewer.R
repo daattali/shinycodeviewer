@@ -152,6 +152,8 @@ code_viewer_ui <- function(id, height = NULL, width = "100%") {
 #' clicks on insert/modify/delete on the 5th line, then the module will report it as the second line (5 - 3 = 2).
 #' Similarly, if `skip = 3` and `error_line = 5`, then it will appear as if the 8th line is the error (because the
 #' first 3 don't count).
+#' @param show_chunk_numbers (boolean) If `TRUE`, show chunk numbers beside each code chunk (this is equivalent
+#' to line numbers if each chunk is a single line of code).
 #' @param auto_actions (boolean) If `TRUE`, clicking on an action (insert/modify/delete) will be handled
 #' automatically by {shinycodeviewer}. If `FALSE`, clicking these actions will not trigger
 #' any action, and you will need to implement a custom action by listening to the module's return
@@ -163,7 +165,8 @@ code_viewer_ui <- function(id, height = NULL, width = "100%") {
 #'   - modify: The chunk number the user wants to modify
 #'   - delete: The chunk number the user wants to delete
 #' @export
-code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = NULL, skip = NULL, auto_actions = TRUE) {
+code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = NULL, skip = NULL,
+                               show_chunk_numbers = FALSE, auto_actions = TRUE) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
@@ -172,6 +175,7 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
       error_line_r <- make_reactive(error_line)
       editable_r <- make_reactive(editable)
       skip_r <- make_reactive(skip)
+      show_chunk_numbers_r <- make_reactive(show_chunk_numbers)
 
       chunks_current <- shiny::reactiveVal(NULL)
       observe({
@@ -199,6 +203,7 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
         chunks_html <- lapply(seq_along(chunks_current()), function(chunk_idx) {
           chunk <- chunks_current()[[chunk_idx]]
 
+          orig_chunk_idx <- chunk_idx
           chunk_idx <- chunk_idx - skip_num()
 
           error <- (!is.null(error_line_r()) && error_line_r() == chunk_idx)
@@ -221,7 +226,13 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
               "<i class='fa fa-bug chunk-error-icon'></i>"
             )
           }
-          chunk_html <- shiny::tags$pre(shiny::HTML(as.character(shiny::tags$div(shiny::HTML(chunk), class = "language-r hl-me"))))
+          chunk_html <- shiny::tags$pre(
+            class = "code-chunk-text",
+            shiny::HTML(as.character(shiny::tags$div(
+              shiny::HTML(chunk),
+              class = "language-r hl-me"
+            )))
+          )
 
           onclick_tpl <- function(action) {
             glue::glue(
@@ -230,7 +241,16 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
             )
           }
 
+          chunk_number_html <- NULL
+          if (show_chunk_numbers_r()) {
+            chunk_number_html <- shiny::tags$pre(
+              orig_chunk_idx,
+              class = "unselectable chunk-num"
+            )
+          }
+
           shiny::tags$div(
+            if (show_chunk_numbers_r()) chunk_number_html,
             chunk_html,
             if (edit) shiny::tags$div(
               class = "chunk-btns",
@@ -257,8 +277,15 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
           )
         })
 
+        if (show_chunk_numbers_r()) {
+          width <- ceiling(log10(length(chunks_current()) + 1))
+          cls <- paste0("chunk-with-nums chunk-w", width)
+        } else {
+          cls <- ""
+        }
+
         shiny::tagList(
-          shiny::tags$div(class = "shiny-code-chunks", chunks_html),
+          shiny::tags$div(class = "shiny-code-chunks", class = cls, chunks_html),
           shiny::HTML(as.character(shiny::tags$script(
             glue::glue(
               'document.querySelectorAll("#{{ session$ns("code_section") }} .shiny-code-chunks .hl-me").forEach(function(el) { hljs.highlightBlock(el); })',

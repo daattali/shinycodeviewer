@@ -7,22 +7,87 @@
   border: 1px solid #ececec;
   padding: 0.8rem;
 }
-.shiny-code-chunks pre {
-  white-space: pre-wrap;
-  background: inherit;
-  border: 0;
-  padding: 0;
-  margin: 0;
+.shiny-code-chunks.chunk-with-nums {
+  padding: 0 0.8rem 0 0;
+}
+.shiny-code-chunks.chunk-with-nums::before,
+.shiny-code-chunks.chunk-with-nums::after {
+  content: ' ';
+  font-family: monospace;
+  font-size: 13px;
+  height: 0.8rem;
+  padding: 0 1rem 0 2rem;
+  box-sizing: content-box;
+  background: #eaeaea;
+  display: block;
+}
+.shiny-code-chunks.chunk-with-nums.chunk-w1::before,
+.shiny-code-chunks.chunk-with-nums.chunk-w1::after {
+  width: 1ch;
+}
+.shiny-code-chunks.chunk-with-nums.chunk-w2::before,
+.shiny-code-chunks.chunk-with-nums.chunk-w2::after {
+  width: 2ch;
+}
+.shiny-code-chunks.chunk-with-nums.chunk-w3::before,
+.shiny-code-chunks.chunk-with-nums.chunk-w3::after {
+  width: 3ch;
+}
+.shiny-code-chunks.chunk-with-nums.chunk-w4::before,
+.shiny-code-chunks.chunk-with-nums.chunk-w4::after {
+  width: 4ch;
 }
 .shiny-code-chunk {
   position: relative;
-  padding: 0.2rem;
+  padding: 0;
   border-radius: 4px;
   transition: background 0.25s;
   overflow: hidden;
+  display: flex;
+}
+.chunk-with-nums .shiny-code-chunk {
+  border-radius: 0 4px 4px 0;
 }
 .shiny-code-chunk:hover {
   background: #eee;
+}
+.shiny-code-chunks .chunk-num {
+  font-size: 0.9em;
+  background: #eaeaea;
+  flex-shrink: 0;
+  padding: 0.2rem 1rem 0.2rem 2rem;
+  margin: 0 0.5rem 0 0;
+  border: 0;
+  border-radius: 0;
+  color: #777;
+  text-align: right;
+  box-sizing: content-box;
+  overflow: hidden;
+  transition: background 0.25s;
+}
+.shiny-code-chunks .shiny-code-chunk:hover .chunk-num {
+  background: #ccc;
+}
+.shiny-code-chunks.chunk-w1 .chunk-num {
+  width: 1ch;
+}
+.shiny-code-chunks.chunk-w2 .chunk-num {
+  width: 2ch;
+}
+.shiny-code-chunks.chunk-w3 .chunk-num {
+  width: 3ch;
+}
+.shiny-code-chunks.chunk-w4 .chunk-num {
+  width: 4ch;
+}
+.shiny-code-chunks .code-chunk-text {
+  flex: 1;
+  white-space: pre-wrap;
+  background: inherit;
+  border: 0;
+  padding: 0.2rem;
+  margin: 0;
+  font-size: 0.9em;
 }
 .shiny-code-chunk .chunk-btns {
   position: absolute;
@@ -53,7 +118,19 @@
 .shiny-code-chunk.chunk-error:hover {
   background: #f1d0d0;
 }
+.shiny-code-chunk.chunk-error .chunk-num {
+  background: #eeb1b1;
+}
+.shiny-code-chunk.chunk-error:hover .chunk-num {
+  background: #f1a8a8;
+}
 .shiny-code-chunk .chunk-error-icon {
   color: #d2322d;
   margin-left: 4px;
+}
+.unselectable {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
