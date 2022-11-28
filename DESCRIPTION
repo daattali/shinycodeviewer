@@ -8,8 +8,11 @@ Authors@R: c(
         comment = c(ORCID="0000-0002-5645-3493")
     ))
 Description: Display a series of code chunks with syntax highlighting. Each
-    chunk can optionally have Insert/Modify/Delete buttons. One chunk can be
-    shown as an error/bug.
+    chunk can optionally have Insert/Modify/Delete buttons. Usually a code
+    chunk is a single line of code, but a code chunk can be multiple lines
+    if you want to allow interactions (add/modify/delete a code chunk) that 
+    should operate on multiple lines together. One chunk can be shown as 
+    containing an error/bug.
 URL: https://github.com/daattali/shinycodeviewer
 BugReports: https://github.com/daattali/shinycodeviewer/issues
 Depends:

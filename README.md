@@ -1,8 +1,8 @@
 # shinycodeviewer
 
-View and edit a series of code chunks with syntax highlighting in Shiny
+View and edit a series of code chunks with syntax highlighting in Shiny. Usually a code chunk is a single line of code, but a code chunk can be multiple lines if you want to allow interactions (add/modify/delete a code chunk) that should operate on multiple lines together.
 
-### Example 1: Allow editing all lines, skip first 2 lines, use automatic actions
+### Example 1: Allow editing all chunks, skip first 2 chunks, use automatic actions
 
 ```r
 library(shiny)
@@ -49,7 +49,7 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 ```
 
-### Example 2: Let user choose which lines are editable, how many lines to skip, which line shows an error, whether to show chunk numbers, and use custom actions
+### Example 2: Let user choose which chunks are editable, how many chunks to skip, which chunk shows an error, whether to show chunk numbers, and use custom actions
 
 ```r
 library(shiny)
@@ -80,7 +80,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   code <- code_viewer_server("code", chunks = init_code, auto_actions = FALSE,
     editable = reactive(input$editable), skip = reactive(input$skip),
-    error_line = reactive(input$error), show_chunk_numbers = reactive(input$show_chunk_numbers)
+    error_chunk = reactive(input$error), show_chunk_numbers = reactive(input$show_chunk_numbers)
   )
   
   observeEvent(code$insert(), {

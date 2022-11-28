@@ -12,7 +12,7 @@ code_viewer_server(
   id,
   chunks = NULL,
   editable = NULL,
-  error_line = NULL,
+  error_chunk = NULL,
   skip = NULL,
   show_chunk_numbers = FALSE,
   auto_actions = TRUE
@@ -27,18 +27,18 @@ code_viewer_server(
 \item{width}{The width of the code viewer. Must be a valid CSS unit (like \code{"100\%"},
 \code{"400px"}, \code{"auto"}) or a number which will be the number of pixels.}
 
-\item{chunks}{(reactive or static) List of code chunks, where each code chunk is a string.
-A single chunk is also acceptable. A code chunk can consist of multiple lines.}
+\item{chunks}{(reactive or static) A code chunk or a list of code chunks, where each code chunk is a string.
+A code chunk is usually a single line of code, but it can consist of multiple lines.}
 
 \item{editable}{(reactive or static) Vector of chunk numbers that are editable, or TRUE to make everything editable.}
 
-\item{error_line}{(reactive or static) Chunk number that should be shown as the error.}
+\item{error_chunk}{(reactive or static) Chunk number that should be shown as the error.}
 
-\item{skip}{(reactive or static) Number of lines to skip in the numbering system, essentially ignoring those lines
-for interaction purposes but still showing them. For example, if there are 10 lines in total and \code{skip = 3} and a user
-clicks on insert/modify/delete on the 5th line, then the module will report it as the second line (5 - 3 = 2).
-Similarly, if \code{skip = 3} and \code{error_line = 5}, then it will appear as if the 8th line is the error (because the
-first 3 don't count).}
+\item{skip}{(reactive or static) Number of chunks to skip in the numbering system, essentially ignoring those chunks
+for interaction purposes but still showing them. For example, if there are 10 chunks in total and \code{skip = 3} and a user
+clicks on insert/modify/delete on the 5th chunk, then the module will report it as the second chunk (5 - 3 = 2).
+Similarly, if \code{skip = 3} and \code{error_chunk = 5}, then it will appear as if the 8th chunk is the error (because the
+first 3 don't count). Skipped chunks are never editable.}
 
 \item{show_chunk_numbers}{(boolean) If \code{TRUE}, show chunk numbers beside each code chunk (this is equivalent
 to line numbers if each chunk is a single line of code).}
@@ -60,12 +60,16 @@ to allow you to respond to these actions:
 }
 \description{
 Display a series of code chunks with syntax highlighting. Each chunk can optionally
-have Insert/Modify/Delete buttons. One chunk can be shown as an error/bug.
+have Insert/Modify/Delete buttons.\cr\cr
+Usually a code chunk is a single line of code, but a code chunk can be multiple lines
+if you want to allow interactions (add/modify/delete a code chunk) that should operate
+on multiple lines together.\cr\cr
+One chunk can be shown as containing an error/bug.
 }
 \examples{
 if (interactive()) {
 
-## Example 1: Allow editing all lines, skip first 2 lines, use automatic actions
+## Example 1: Allow editing all chunks, skip first 2 chunks, use automatic actions
 library(shiny)
 library(shinycodeviewer)
 
@@ -111,7 +115,7 @@ shinyApp(ui, server)
 
 ## -----------------------------------
 
-## Example 2: Let user choose which lines are editable, how many lines to skip, which line
+## Example 2: Let user choose which chunks are editable, how many chunks to skip, which chunk
 ## shows an error, and use custom actions
 library(shiny)
 library(shinycodeviewer)
@@ -140,7 +144,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   code <- code_viewer_server("code", chunks = init_code, auto_actions = FALSE,
     editable = reactive(input$editable), skip = reactive(input$skip),
-    error_line = reactive(input$error))
+    error_chunk = reactive(input$error))
 
   observeEvent(code$insert(), {
     shinyalert::shinyalert(paste("Insert before chunk", code$insert()),

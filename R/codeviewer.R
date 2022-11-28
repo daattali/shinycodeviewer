@@ -1,12 +1,16 @@
 #' Code viewer display area
 #'
 #' Display a series of code chunks with syntax highlighting. Each chunk can optionally
-#' have Insert/Modify/Delete buttons. One chunk can be shown as an error/bug.
+#' have Insert/Modify/Delete buttons.\cr\cr
+#' Usually a code chunk is a single line of code, but a code chunk can be multiple lines
+#' if you want to allow interactions (add/modify/delete a code chunk) that should operate
+#' on multiple lines together.\cr\cr
+#' One chunk can be shown as containing an error/bug.
 #' @param id Unique ID for the module
 #' @examples
 #' if (interactive()) {
 #'
-#' ## Example 1: Allow editing all lines, skip first 2 lines, use automatic actions
+#' ## Example 1: Allow editing all chunks, skip first 2 chunks, use automatic actions
 #' library(shiny)
 #' library(shinycodeviewer)
 #'
@@ -52,7 +56,7 @@
 #'
 #' ## -----------------------------------
 #'
-#' ## Example 2: Let user choose which lines are editable, how many lines to skip, which line
+#' ## Example 2: Let user choose which chunks are editable, how many chunks to skip, which chunk
 #' ## shows an error, and use custom actions
 #' library(shiny)
 #' library(shinycodeviewer)
@@ -81,7 +85,7 @@
 #' server <- function(input, output, session) {
 #'   code <- code_viewer_server("code", chunks = init_code, auto_actions = FALSE,
 #'     editable = reactive(input$editable), skip = reactive(input$skip),
-#'     error_line = reactive(input$error))
+#'     error_chunk = reactive(input$error))
 #'
 #'   observeEvent(code$insert(), {
 #'     shinyalert::shinyalert(paste("Insert before chunk", code$insert()),
@@ -142,15 +146,15 @@ code_viewer_ui <- function(id, height = NULL, width = "100%") {
 }
 
 #' @rdname code_viewer
-#' @param chunks (reactive or static) List of code chunks, where each code chunk is a string.
-#' A single chunk is also acceptable. A code chunk can consist of multiple lines.
+#' @param chunks (reactive or static) A code chunk or a list of code chunks, where each code chunk is a string.
+#' A code chunk is usually a single line of code, but it can consist of multiple lines.
 #' @param editable (reactive or static) Vector of chunk numbers that are editable, or TRUE to make everything editable.
-#' @param error_line (reactive or static) Chunk number that should be shown as the error.
-#' @param skip (reactive or static) Number of lines to skip in the numbering system, essentially ignoring those lines
-#' for interaction purposes but still showing them. For example, if there are 10 lines in total and `skip = 3` and a user
-#' clicks on insert/modify/delete on the 5th line, then the module will report it as the second line (5 - 3 = 2).
-#' Similarly, if `skip = 3` and `error_line = 5`, then it will appear as if the 8th line is the error (because the
-#' first 3 don't count).
+#' @param error_chunk (reactive or static) Chunk number that should be shown as the error.
+#' @param skip (reactive or static) Number of chunks to skip in the numbering system, essentially ignoring those chunks
+#' for interaction purposes but still showing them. For example, if there are 10 chunks in total and `skip = 3` and a user
+#' clicks on insert/modify/delete on the 5th chunk, then the module will report it as the second chunk (5 - 3 = 2).
+#' Similarly, if `skip = 3` and `error_chunk = 5`, then it will appear as if the 8th chunk is the error (because the
+#' first 3 don't count). Skipped chunks are never editable.
 #' @param show_chunk_numbers (boolean) If `TRUE`, show chunk numbers beside each code chunk (this is equivalent
 #' to line numbers if each chunk is a single line of code).
 #' @param auto_actions (boolean) If `TRUE`, clicking on an action (insert/modify/delete) will be handled
@@ -164,14 +168,14 @@ code_viewer_ui <- function(id, height = NULL, width = "100%") {
 #'   - modify: The chunk number the user wants to modify
 #'   - delete: The chunk number the user wants to delete
 #' @export
-code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = NULL, skip = NULL,
+code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_chunk = NULL, skip = NULL,
                                show_chunk_numbers = FALSE, auto_actions = TRUE) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
 
       chunks_r <- make_reactive(chunks)
-      error_line_r <- make_reactive(error_line)
+      error_chunk_r <- make_reactive(error_chunk)
       editable_r <- make_reactive(editable)
       skip_r <- make_reactive(skip)
       show_chunk_numbers_r <- make_reactive(show_chunk_numbers)
@@ -205,7 +209,7 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
           orig_chunk_idx <- chunk_idx
           chunk_idx <- chunk_idx - skip_num()
 
-          error <- (!is.null(error_line_r()) && error_line_r() == chunk_idx)
+          error <- (!is.null(error_chunk_r()) && error_chunk_r() == chunk_idx)
 
           if (chunk_idx < 1) {
             edit <- FALSE
