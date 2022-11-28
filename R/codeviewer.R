@@ -314,6 +314,9 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
         })
 
         shiny::observeEvent(input$shinycodechunk_insert_click, {
+          if (!input$shinycodechunk_insert_click) {
+            return()
+          }
           chunk_idx <- as.integer(input$insert) + skip_num()
           old_chunks <- chunks_current()
           new_chunks <- append(old_chunks, input$shinycodechunk_insert_code, after = chunk_idx - 1)
@@ -340,6 +343,9 @@ code_viewer_server <- function(id, chunks = NULL, editable = NULL, error_line = 
         })
 
         shiny::observeEvent(input$shinycodechunk_modify_click, {
+          if (!input$shinycodechunk_modify_click) {
+            return()
+          }
           chunk_idx <- as.integer(input$modify) + skip_num()
           new_chunks <- chunks_current()
           new_chunks[chunk_idx] <- input$shinycodechunk_modify_code
