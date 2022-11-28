@@ -114,7 +114,6 @@ code_viewer_ui <- function(id, height = NULL, width = "100%") {
   style <- paste(width_css, height_css)
 
   shiny::tagList(
-    shinyalert::useShinyalert(force = TRUE),
     fontawesome::fa_html_dependency(),
 
     htmltools::htmlDependency(
